@@ -10,7 +10,7 @@ This repository contains the
 |:---|:---|
 | Name | Brian Hockett |
 | NetID | mgh2xx |
-| DOI | [TBD](TBD)
+| DOI | [https://doi.org/10.5281/zenodo.19544215](https://doi.org/10.5281/zenodo.19544215)
 | Press Release | [Individualized Aging Curves Reveal That No Two NBA Players Evolve the Same Way](https://github.com/brianhockett/nba-aging-curve/blob/main/PressRelease.md) |
 | Pipeline | [Analysis Pipeline (.ipynb)](https://github.com/brianhockett/nba-aging-curve/blob/main/pipeline.ipynb) + [Analysis Pipeline (.md)](https://github.com/brianhockett/nba-aging-curve/blob/main/pipeline.md) |
 | License | [MIT](https://github.com/brianhockett/nba-aging-curve/blob/main/LICENSE) |
