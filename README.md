@@ -78,7 +78,7 @@ The raw data was acquired
 ### Code Table
 | Data | Description | Link to Code |
 |:-------------|:-----------|:-------------|
-| Basketball Reference Data | Uses `basketball_reference_web_scraper` package to scrape Basketball Reference for player data | [Basketball Reference Code](https://github.com/brianhockett/nba-aging-curve/blob/main/src/generate-br-data.py) |
+| Basketball Reference Data | Pulls basic and advancded player statistics data from Basketball Reference and loads into MongoDB database | [Basketball Reference Code](https://github.com/brianhockett/nba-aging-curve/blob/main/src/generate-br-data.py) |
 
 ### Rationale
 The 
