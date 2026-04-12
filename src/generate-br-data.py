@@ -51,7 +51,8 @@ seasons = ["2003-04", "2004-05", "2005-06", "2006-07",
 delay = 3.5 # 3.5s delay is required for BRef rate limits
 output_all = "bref-data.json"      
 output_one = "bref-sample-document.json"
-want__sample = True # Set to True when I want to save a sample document for quick inspection
+save_local = True # Set to True to save the full dataset to a local JSON file
+
 
 # Function to safely convert values to float
 def safe_float(val):
@@ -204,7 +205,7 @@ for player_name, seasons in players_base.items():
         adv_row = advanced_index.get(key)  
         season_docs.append(build_season_dict(base_row, adv_row))
 
-    # Build the player document by combining their name and all their season subdocuments
+    # Build the player document by combining their name and all their season sub-documents
     doc = {
         "_id": clean_id(player_name), # Generate a simple string ID
         "name": player_name, 
@@ -224,17 +225,17 @@ if documents:
 else:
     logging.warning("No documents to insert")
 
-# Save the full dataset to a JSON file
-with open(output_all, "w") as f:
-    json.dump(documents, f, indent = 2, default = str)
-print(f"Saved full dataset to {output_all}")
+# Optionally save the full dataset and a sample document to local JSON files for inspection
+if save_local:
+    # Save the full dataset to a JSON file
+    with open(output_all, "w") as f:
+        json.dump(documents, f, indent = 2, default = str)
+    print(f"Saved full dataset to {output_all}")
 
-# If want_sample is True, save a random sample document to a separate file for quick inspection
-if want__sample:
     # Select random sample document
     sample = random.choice(documents)
 
-    # Save to separate JSON file
+    # Save sample to separate JSON file
     with open(output_one, "w") as f:
         json.dump(sample, f, indent = 2, default = str)
     print(f"Saved sample document to {output_one}")
