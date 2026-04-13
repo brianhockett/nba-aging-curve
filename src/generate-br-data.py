@@ -13,9 +13,10 @@ import re
 # Initialize logging
 logging.basicConfig(
     filename = "generate-br-data.log",                    # Log output file
-    level = logging.INFO,
-    format= " %(asctime)s - %(levelname)s - %(message)s"  # Timestamp, level, and message format
+    level = logger.iNFO,
+    format = " %(asctime)s - %(levelname)s - %(message)s"  # Timestamp, level, and message format
 )
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,7 +30,7 @@ MONGO_APP_NAME = os.getenv("MONGO_APP_NAME")
 # Connection string and client connection
 conn = f"mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_CLUSTER}/?appName={MONGO_APP_NAME}"
 client = pymongo.MongoClient(conn)
-logging.info("Connected to MongoDB")
+logger.info("Connected to MongoDB")
 print("Connected to MongoDB")
 
 # Select database and collection
@@ -38,7 +39,7 @@ collection = db['players']
 
 # Clear collection before inserting new data
 collection.drop()
-logging.info("Cleared existing data from MongoDB collection")
+logger.info("Cleared existing data from MongoDB collection")
 print("Cleared existing data from MongoDB collection")
 
 # Configuration
@@ -48,6 +49,17 @@ seasons = ["2003-04", "2004-05", "2005-06", "2006-07",
            "2015-16", "2016-17", "2017-18", "2018-19",
            "2019-20", "2020-21", "2021-22", "2022-23",
            "2023-24", "2024-25", "2025-26"]
+
+# Total regular season games per season
+season_games = {
+    "2003-04": 82, "2004-05": 82,  "2005-06": 82, "2006-07": 82, 
+    "2007-08": 82, "2008-09": 82, "2009-10": 82, "2010-11": 82, 
+    "2011-12": 66, "2012-13": 82, "2013-14": 82, "2014-15": 82, 
+    "2015-16": 82, "2016-17": 82, "2017-18": 82, "2018-19": 82, 
+    "2019-20": 72, "2020-21": 72, "2021-22": 82, "2022-23": 82,
+    "2023-24": 82, "2024-25": 82, "2025-26": 82,
+}
+
 delay = 3.5 # 3.5s delay is required for BRef rate limits
 output_all = "bref-data.json"      
 output_one = "bref-sample-document.json"
@@ -94,7 +106,7 @@ def fetch_season(season_str, measure_type):
         url = f"https://www.basketball-reference.com/leagues/NBA_{year}_advanced.html"
 
     # Log and print the fetch attempt
-    logging.info(f"Fetching {measure_type} stats for {season_str} (BRef Year: {year})")
+    logger.info(f"Fetching {measure_type} stats for {season_str} (BRef Year: {year})")
     print(f"Fetching {measure_type} stats for {season_str} (BRef Year: {year})")
 
     # Fetch the tables from the URL using pandas
@@ -125,24 +137,27 @@ def fetch_season(season_str, measure_type):
         return df.to_dict(orient = "records")
 
     except Exception as e:
-        logging.error(f"Failed {measure_type} {season_str}: {e}")
+        logger.error(f"Failed {measure_type} {season_str}: {e}")
         return []
 
-# Function to merge one base and one advanced row into a single season subdocument
+# Function to merge one base and one advanced row into a single season sub-document
 def build_season_dict(base_row, adv_row):
     # Calculate games played
     gp = safe_int(base_row.get("G")) or 1
+    season = base_row.get("Season")
+    max_gp = season_games.get(season, 82)
+    missed = max(0, max_gp - gp)
 
     # Build the season dictionary, combining base and advanced stats, and calculating derived fields
     return {
         # Basic info
-        "season":           base_row.get("Season"),
+        "season":           season,
         "age":              safe_int(base_row.get("Age")),
         "team":             base_row.get("Team"),
-        "games_played":     safe_int(base_row.get("G")),
+        "games_played":     gp,
         "games_started":    safe_int(base_row.get("GS")),
-        "games_missed":     82 - gp,
-        "injury_flag":      gp < 40,
+        "games_missed":     missed,
+        "injury_flag":      gp < (max_gp * 0.5),
         "minutes_per_game": safe_float(base_row.get("MP")),
 
         # Counting stats (Per Game mode)
@@ -175,7 +190,7 @@ for season in seasons:
     all_base.extend(fetch_season(season, "Base"))
     all_advanced.extend(fetch_season(season, "Advanced"))
 
-logging.info(f"Collected {len(all_base)} base rows, {len(all_advanced)} advanced rows")
+logger.info(f"Collected {len(all_base)} base rows, {len(all_advanced)} advanced rows")
 print(f"Collected {len(all_base)} base rows and {len(all_advanced)} advanced rows")
 
 # Index advanced rows by (Player Name, Season) 
@@ -214,16 +229,19 @@ for player_name, seasons in players_base.items():
     documents.append(doc)
 
 
-logging.info(f"Pass 2 complete: {len(documents)} player documents built")
+logger.info(f"Built {len(documents)} player documents")
 print(f"Built {len(documents)} player documents")
 
 # Insert all player documents into MongoDB collection
 if documents:
-    collection.insert_many(documents)
-    logging.info(f"Inserted {len(documents)} player documents into MongoDB")
-    print(f"Inserted {len(documents)} player documents into MongoDB")
+    try:
+        collection.insert_many(documents)
+        logger.info(f"Inserted {len(documents)} player documents into MongoDB")
+        print(f"Inserted {len(documents)} player documents into MongoDB")
+    except Exception as e:
+        logger.error(f"Error inserting documents into MongoDB: {e}")
 else:
-    logging.warning("No documents to insert")
+    logger.warning("No documents to insert")
 
 # Optionally save the full dataset and a sample document to local JSON files for inspection
 if save_local:
