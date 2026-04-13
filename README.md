@@ -73,7 +73,8 @@ This project lives at the intersection of the sports analytics and predictive mo
 ## Data Creation
 
 ### Data Acquisition
-The raw data was acquired 
+
+The data used for this project originated on the basketball stats website, `basketball-reference.com`. The data was acquired from the website by reading the html of the basic and advanced stats pages for each season included for the project. These pages contain basic and advanced statistics for every player in a given season. The data generating script scraped the data from both pages for each season, collecting the data from the tables stored on the page. The data for each table was aggregated across all the seasons in the dataset. Finally, the full basic and advanced datasets were combined into a complete dataset. This complete dataset was then aggregated by player into a document style format, where each document contained all seasons of data for a given player. Finally, these documents were loaded into and stored in a MongoDB database collection.
 
 ### Code Table
 | Data | Description | Link to Code |
