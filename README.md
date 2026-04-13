@@ -82,7 +82,7 @@ The data used for this project originated on the basketball stats website, `bask
 | Basketball Reference Data | Pulls basic and advanced player statistics data from Basketball Reference and loads it into MongoDB database | [Basketball Reference Code](https://github.com/brianhockett/nba-aging-curve/blob/main/src/generate-br-data.py) |
 
 ### Rationale
-The 
+A number of key decisions had to be made in the data collection process. First, the decision about which years of data had to be made. The choice to collect data from the 2003-04 season to the 2025-26 season was made to ensure a significant sample size, while restricting the analysis to the modern NBA, where the style of play is more similar throughout the dataset. By extending back to 2003, it is ensured that players' full careers are included in the dataset, allowing for the aging curve model to capture trends over the course of full playing careers (ages 18-40). Next, the choice was made to include only regular season data. The exclusion of playoff data was intentional, as many players do not have the opportunity to play in the playoffs, due to circumstances outside of their control. Likewise, the playing environments of the playoffs and regular season are not equivalent, which would lead to skewed results if the playoffs were included. Lastly, in the analysis stage, the dataset will be further restricted to exclude player-seasons in which the player played too few games or too few minutes per game, as their statistical results will not be representative of their true talent, which the model will aim to capture.
 
 ### Bias Identification
 The 
