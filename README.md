@@ -88,7 +88,7 @@ A number of key decisions had to be made in the data collection process. First, 
 The most significant source of bias in the dataset for this project is survivorship bias. At the older end of the age spectrum, the majority of the players remaining in the dataset will be those who are playing at a high level. Whereas younger players would be kept on NBA rosters despite poor performance due to their potential for growth, veterans are not given this same opportunity to improve, and are far more likely to be cut (removed from the dataset) if their performance begins to slip. This creates a survivorship bias in the dataset, where the older age groups have artificially better performance, due to the removal of poorly performing players. Likewise, the use of the minutes-per-game and games-played filters creates another form of selection bias, with oft-injured and and low playing time players being excluded from the analysis. This could result in an under-representation of these two groups of players in the aging-curve model. Another form of bias that could be introduced is temporal bias, stemming from the use of data stretching from 2003 to 2026. During this time, the style of play in the NBA changed drastically with the growth of 3-point rates and offensively-focused rule changes resulting in a much higher scoring environment. This leads to a temporal bias where the offensive outputs of players who played in the earlier years of the dataset are systematically lower than those of later-year players.
 
 ### Bias Mitigation
-The 
+Several steps were taken during the data collection and analysis processes to mitigate biases. One of these steps was making use of a mixed effects model for the aging curve in order to address the survivorship bias in older players. By nature of mixed effects models, which will model each player's aging curve individually, rather than as a collection of all the players, the effects of the survivorship bias will be partially mitigated. Players' aging trajectories will be estimated largely based on their own playing history, rather than being distorted by the high-performing veterans in the data. Likewise, the temporal bias caused by using data ranging from 2003 to 2026 will be mitigated through the use of the Box Plus/Minus (BPM) metric to evaluate player performance. While offensive output is systematically biased based on the season the data is from, BPM is normalized on a per-season basis, meaning two players from different seasons will have comparable BPMs, as long as their statistical outputs are similar relative to their season. This normalization mitigates the effects of this bias in the analysis. Finally, while the minutes-per-game and games-played filters introduced a form of selection bias by excluding low-usage and frequently injured players, this restriction was necessary to reduce noise in the performance metrics, as extremely small sample sizes can produce highly volatile BPM estimates that would distort the aging-curve model if they remained in the dataset.
 
 
 ## Metadata
@@ -106,8 +106,31 @@ form is permissible
 
 | Field Name | Data Type | Description | Example Value |
 |:-------------|:-----------|:-------------|:---------------|
-| - | - | - | - | - |
-
+| _id | String | Unique identifier for each document in MongoDB | "tracy_mcgrady" |
+| name | String | Full name of the player the document represents | "Tracy McGrady" |
+| seasons | Array | Array containing season-level performance records for the player | [ {...}, {...} ] |
+| seasons.season | String | NBA season identifier in "YYYY-YY" format| "2003-04" |
+| seasons.age | Integer | Age of the player during the season | 24 |
+| seasons.team | String | Abbreviation of the player's team name for the season | "ORL" |
+| seasons.games_played | Integer | The number of games the player appeared in | 67 |
+| seasons.games_started | Integer | The number of games the player started | 67 |
+| seasons.games_missed | Integer | The number of games the player missed | 15 |
+| seasons.injury_flag | Boolean | Indicator of whether the player missed more than half of their possible games | false |
+| seasons.minutes_per_game | Float | Average minutes played per game | 39.9 |
+| seasons.points_per_game | Float | Average points scored per game | 28 |
+| seasons.rebounds_per_game | Float | Average rebounds per game | 6 |
+| seasons.assists_per_game | Float | Average assists per game | 5.5 |
+| seasons.steals_per_game | Float | Average steals per game | 1.4 |
+| seasons.blocks_per_game | Float | Average blocks per game | 0.6 |
+| seasons.turnovers_per_game | Float | Average turnovers per game | 2.7 |
+| seasons.PER | Float | Player Efficiency Rating (Measure of overall statistical production) for the season | 25.3 |
+| seasons.TS_pct | Float | True Shooting Percentage, measuring scoring efficiency | 0.526 |
+| seasons.USG_pct | Float | Usage Rate, estimating the share of the team's plays that are used by the player | 33.2 |
+| seasons.AST_pct | Float | Assist Rate, estimating the percentage of teammate field goals assisted by the player | 28.3 |
+| seasons.TOV_pct | Float | Turnover Rate, estimating the percentage of plays the player turns the ball over | 9.1 |
+| seasons.WS | Float | Win Shares, estimating the number of team win added by the player | 8.4 |
+| seasons.BPM | Float | Box Plus/Minus, estimating the player's value per 100 possessions relative to league average | 6.4 |
+| seasons.VORP | Float | Value Over Replacement Player, estimating value relative to a freely available player | 5.7 |
 
 ### Data Dictionary Uncertainty
 | Field Name | Data Type | Reason for Uncertainty | Quantification of Uncertainty |

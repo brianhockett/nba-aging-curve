@@ -13,7 +13,7 @@ import re
 # Initialize logging
 logging.basicConfig(
     filename = "generate-br-data.log",                    # Log output file
-    level = logger.iNFO,
+    level = logging.INFO,
     format = " %(asctime)s - %(levelname)s - %(message)s"  # Timestamp, level, and message format
 )
 logger = logging.getLogger(__name__)
@@ -174,8 +174,6 @@ def build_season_dict(base_row, adv_row):
         "USG_pct":  safe_float(adv_row.get("USG%"))  if adv_row else None,
         "AST_pct":  safe_float(adv_row.get("AST%"))  if adv_row else None,
         "TOV_pct":  safe_float(adv_row.get("TOV%"))  if adv_row else None,
-        "OREB_pct": safe_float(adv_row.get("ORB%"))  if adv_row else None,
-        "DREB_pct": safe_float(adv_row.get("DRB%"))  if adv_row else None,
         "WS":       safe_float(adv_row.get("WS"))    if adv_row else None,
         "BPM":      safe_float(adv_row.get("BPM"))   if adv_row else None,
         "VORP":     safe_float(adv_row.get("VORP"))  if adv_row else None,
