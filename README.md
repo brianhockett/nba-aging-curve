@@ -120,6 +120,7 @@ Several steps were taken during the data collection and analysis processes to mi
                 age: <age_value>,
                 team: <team_value>,
                 ...,
+                BPM: <BPM_value>,
                 VORP: <VORP_value>
             },
             {
@@ -127,6 +128,7 @@ Several steps were taken during the data collection and analysis processes to mi
                 age: <age_value>,
                 team: <team_value>,
                 ...,
+                BPM: <BPM_value>,
                 VORP: <VORP_value>
             },
             ...
@@ -134,7 +136,8 @@ Several steps were taken during the data collection and analysis processes to mi
     },
     {
         _id: <unique_player_identifier>,
-        ...
+        name: <player_name>,
+        seasons: ...
     },
     ...
 ]
@@ -146,7 +149,7 @@ Several steps were taken during the data collection and analysis processes to mi
 |:------|:-----|:------------|:---------|
 | Database | `bref-data` | MongoDB Database containing `players` collection | 1 |
 | Collection | `players` | Collection holding all player documents | 1 |
-| Document | Player (`_id`) | Each document represents a player. Uniquely identified by `_id` | 2380 |
+| Document | Player (`_id`) | Each document represents a player, containing all statistical data for their career. Uniquely identified by `_id` | 2380 |
 
 
 ### Data Dictionary
