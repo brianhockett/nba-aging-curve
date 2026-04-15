@@ -94,11 +94,60 @@ Several steps were taken during the data collection and analysis processes to mi
 ## Metadata
 
 ### Soft-Schema
-Guidelines for document structure
+
+- **There is a single collection in the MongoDB Database, called `players`**
+- **Every document in the database represents a single player**
+- **Player-Level fields include:**
+  - **`_id`: Unique identifier derived from the player's name (e.g. `lastName_firstName`)**
+  - **`name`: Full name of the player**
+  - **`seasons`: Array of season-level records for the player's career**
+- **Season-Level fields include:**
+  - **`season`: Season identifier (e.g. `YYYY-YY)**
+  - **`age`: Age of the player during that season**
+  - **Additional performance metrics (as defined in the data dictionary)**
+- **Each player document only contains seasons in which the player appeared. It does not include missing or unused seasons across the full timeline of the dataset (2003–2026)**
+
+
+**Structure of documents in .json format:**
+```{json}
+[
+    {
+        _id: <unique_player_identifier>,
+        name: <player_name>,
+        seasons: [
+            {
+                season: <season_identifier>,
+                age: <age_value>,
+                team: <team_value>,
+                ...,
+                VORP: <VORP_value>
+            },
+            {
+                season: <season_identifier>,
+                age: <age_value>,
+                team: <team_value>,
+                ...,
+                VORP: <VORP_value>
+            },
+            ...
+        ]
+    },
+    {
+        _id: <unique_player_identifier>,
+        ...
+    },
+    ...
+]
+```
 
 ### Data Summary
- Summary of Database contents - tabular
-form is permissible
+
+| Level | Name/Identifier | Description | Quantity |
+|:------|:-----|:------------|:---------|
+| Database | `bref-data` | MongoDB Database containing `players` collection | 1 |
+| Collection | `players` | Collection holding all player documents | 1 |
+| Document | Player (`_id`) | Each document represents a player. Uniquely identified by `_id` | 2380 |
+
 
 ### Data Dictionary
 
@@ -135,5 +184,11 @@ form is permissible
 ### Data Dictionary Uncertainty
 | Field Name | Data Type | Reason for Uncertainty | Quantification of Uncertainty |
 |:-------------|:-----------|:-------------------------------|:------|
-| - | - | - | - | - |
+| seasons.games_missed | Integer | Games missed is calculated as games played subtracted from a baseline of the max number of games any team played in that season. There are some players in the dataset who were traded mid-season, and would have more or less games they could have appeared in than the baseline. | ± 2 games |
+| seasons.injury_flag | Boolean | The injury flag is calculated as whether or not a player missed more than half of their possible games. Because this value is derived from seasons.games_missed, it inherits some of its uncertainty. | ~5% of flags incorrect |
+| seasons.PER | Float | PER compresses overall box score production into a single value, but is sensitive to era adjustments and cannot fully separate player quality from pace and role context.  | ± 1.5 PER points |
+| seasons.WS | Float | Win Shares attributes team wins to individuals using box score proxies, which can over-credit players on strong teams and under-credit those on weaker teams. | ± 1.0 win shares |
+| seasons.BPM | Float | BPM estimates impact from box score and lineup proxies, but struggles with non-box-score contributions and role-dependent players. | ± 0.5–1.0 BPM |
+| seasons.VORP | Float | VORP compounds BPM and minutes played, so any error in estimated impact or playing time directly propagates into total value estimates. | ± 0.3–0.6 VORP |
+
 
