@@ -102,7 +102,7 @@ Several steps were taken during the data collection and analysis processes to mi
   - **`name`: Full name of the player**
   - **`seasons`: Array of season-level records for the player's career**
 - **Season-Level fields include:**
-  - **`season`: Season identifier (e.g. `YYYY-YY)**
+  - **`season`: Season identifier (e.g. `YYYY-YY`)**
   - **`age`: Age of the player during that season**
   - **Additional performance metrics (as defined in the data dictionary)**
 - **Each player document only contains seasons in which the player appeared. It does not include missing or unused seasons across the full timeline of the dataset (2003–2026)**
@@ -187,10 +187,14 @@ Several steps were taken during the data collection and analysis processes to mi
 ### Data Dictionary Uncertainty
 | Field Name | Data Type | Reason for Uncertainty | Quantification of Uncertainty |
 |:-------------|:-----------|:-------------------------------|:------|
+| seasons.games_played | Integer | There is no uncertainty in the measurement of this value | 0 |
+| seasons.games_started | Integer | There is no uncertainty in the measurement of this value | 0 |
 | seasons.games_missed | Integer | Games missed is calculated as games played subtracted from a baseline of the max number of games any team played in that season. There are some players in the dataset who were traded mid-season, and would have more or less games they could have appeared in than the baseline. | ± 2 games |
+| seasons.minutes_per_game | Float | Official scorers often round seconds to the nearest minute | ± 0.1 - 0.2 min |
+| All "_per_game_" statistics | Float | Precision/Rounding error from the division of totals by games played | ± 0.05 units |
 | seasons.injury_flag | Boolean | The injury flag is calculated as whether or not a player missed more than half of their possible games. Because this value is derived from seasons.games_missed, it inherits some of its uncertainty. | ~5% of flags incorrect |
 | seasons.PER | Float | PER compresses overall box score production into a single value, but is sensitive to era adjustments and cannot fully separate player quality from pace and role context.  | ± 1.5 PER points |
-| seasons.WS | Float | Win Shares attributes team wins to individuals using box score proxies, which can over-credit players on strong teams and under-credit those on weaker teams. | ± 1.0 win shares |
+| seasons.WS | Float | Win Shares attributes team wins to individuals using box score proxies, which can over-credit players on strong teams and under-credit those on weaker teams. | ± 1.0 Win Shares |
 | seasons.BPM | Float | BPM estimates impact from box score and lineup proxies, but struggles with non-box-score contributions and role-dependent players. | ± 0.5–1.0 BPM |
 | seasons.VORP | Float | VORP compounds BPM and minutes played, so any error in estimated impact or playing time directly propagates into total value estimates. | ± 0.3–0.6 VORP |
 
