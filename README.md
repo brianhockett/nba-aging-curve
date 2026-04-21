@@ -2,7 +2,7 @@
 
 ### Executive Summary
 
-This repository contains the 
+This repository contains the data, code, and documentation for an NBA Aging Curve model, predicting the evolution of BPM by age independently for each player using Basketball Reference traditional and advanced statistics from the 2003-2026 NBA seasons. The document database is built from season-level basic and advanced statistics for every player who has played a game in the NBA since the start of the 2003 season. The repository includes the script for extracting tha data and loading it into a MongoDB database, a full data analysis pipeline, a data dictionary, bias identification and mitigation analysis, and a press release aimed at communicating the motivation and findings of the project. All materials and information can be found in this README.
 
 ### Project Metadata
 
@@ -93,7 +93,7 @@ Several steps were taken during the data collection and analysis processes to mi
 
 ## Metadata
 
-### Soft-Schema
+### Implicit Schema
 
 - **There is a single collection in the MongoDB Database, called `players`**
 - **Every document in the database represents a single player**

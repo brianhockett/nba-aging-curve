@@ -22,14 +22,23 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Load MongoDB credentials from .env
-MONGO_USERNAME = os.getenv("MONGO_USERNAME")
-MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
-MONGO_CLUSTER = os.getenv("MONGO_CLUSTER")
-MONGO_APP_NAME = os.getenv("MONGO_APP_NAME")
+try:
+    MONGO_USERNAME = os.getenv("MONGO_USERNAME")
+    MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
+    MONGO_CLUSTER = os.getenv("MONGO_CLUSTER")
+    MONGO_APP_NAME = os.getenv("MONGO_APP_NAME")
+except Exception as e:
+    print(f"Error loading environment variables: {e}")
+    logging.error("Error loading environment variables")
 
 # Connection string and client connection
-conn = f"mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_CLUSTER}/?appName={MONGO_APP_NAME}"
-client = pymongo.MongoClient(conn)
+try:
+    conn = f"mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_CLUSTER}/?appName={MONGO_APP_NAME}"
+    client = pymongo.MongoClient(conn)
+except Exception as e:
+    print(f"Error connecting to MongoDB: {e}")
+    logging.error("Error connecting to MongoDB")
+    
 logger.info("Connected to MongoDB")
 print("Connected to MongoDB")
 
